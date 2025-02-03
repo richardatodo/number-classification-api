@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env
+
+# Logs and databases
+logs/
+*.log
+*.sqlite3
+
+# VS Code settings
+.vscode/
+
+# Pytest cache
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# FastAPI-specific
+*.db
+instance/
+
+# Dependencies
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore IDE files
+.idea/
+.DS_Store
+
+# Ignore compiled Python files
+*.so
+
+# Ignore Uvicorn logs
+uvicorn.log
+
+# Ignore HTTPX cache
+httpx_cache/
+
+# Ignore coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# Ignore __pycache__ directories
+**/__pycache__/
