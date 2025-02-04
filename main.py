@@ -1,5 +1,5 @@
 from mangum import Mangum
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import math
@@ -73,16 +73,22 @@ async def classify_number(number: str):
             "fun_fact": fun_fact
         }
     except ValueError:
-        # Return invalid input with the original number string
-        return {
-            "number": number,
-            "error": True
-        }
+        # Raise HTTPException with 400 status code for invalid input
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "number": number,
+                "error": True
+            }
+        )
     except Exception as e:
-        # Return the original input in case of other errors
-        return {
-            "number": number,
-            "error": True
-        }
+        # Raise HTTPException with 400 status code for other errors
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "number": number,
+                "error": True
+            }
+        )
 
 handler = Mangum(app)
