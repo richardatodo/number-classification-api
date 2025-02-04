@@ -60,8 +60,25 @@ curl -X GET "http://127.0.0.1:8000/api/classify-number?number=371"
 }
 ```
 
-## Deployment
-...
+## Deployment (AWS Lambda Function URL)
+This API is deployed using AWS Lambda with **Lambda Function URLs**.
+
+### Steps to Deploy:
+1. **Package the application**:
+   ```bash
+   Compress-Archive venv\Lib\site-packages\* lambda.zip 
+   Compress-Archive .\main.py -Update lambda.zip
+   ```
+2. **Create an AWS Lambda function**.
+3. **Upload `lambda.zip`** as the Lambda function's code.
+4. **Set up Lambda Function URL**:
+   - Enable Function URL in the AWS Lambda console.
+   - Set Auth Type to `NONE` for public access.
+   - **Enable CORS**:
+5. **Test the Lambda Function URL**:
+   ```bash
+   curl -X GET "https://your-lambda-url/api/classify-number?number=153"
+   ```
 
 ## Error Handling
 - If the input is not a valid integer:
