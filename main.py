@@ -69,6 +69,7 @@ async def classify_number(number: str):
             "number": num,
             "is_prime": is_prime(num),
             "is_perfect": is_perfect(num),
+            
             "properties": properties,
             "digit_sum": get_digit_sum(num),
             "fun_fact": fun_fact
