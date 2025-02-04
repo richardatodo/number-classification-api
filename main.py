@@ -1,6 +1,7 @@
 from mangum import Mangum
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import httpx
 import math
 
@@ -73,19 +74,19 @@ async def classify_number(number: str):
             "fun_fact": fun_fact
         }
     except (ValueError, TypeError):
-        # Raise HTTPException with 400 status code for invalid input
-        raise HTTPException(
+        # Return a custom JSON response with the exact required format
+        return JSONResponse(
             status_code=400,
-            detail={
+            content={
                 "number": number,
                 "error": True
             }
         )
     except Exception as e:
-        # Raise HTTPException with 400 status code for other errors
-        raise HTTPException(
+        # Return a custom JSON response with the exact required format
+        return JSONResponse(
             status_code=400,
-            detail={
+            content={
                 "number": number,
                 "error": True
             }
