@@ -72,7 +72,7 @@ async def classify_number(number: str):
             "digit_sum": get_digit_sum(num),
             "fun_fact": fun_fact
         }
-    except ValueError:
+    except (ValueError, TypeError):
         # Raise HTTPException with 400 status code for invalid input
         raise HTTPException(
             status_code=400,
