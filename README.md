@@ -81,19 +81,14 @@ This API is deployed using AWS Lambda with **Lambda Function URLs**.
    ```
 
 ## Error Handling
-- If the input is not a valid integer:
+- If the input is not a valid number:
   ```json
   {
       "number": "abc",
       "error": true
   }
   ```
-- If the number is out of range:
-  ```json
-  {
-      "detail": "Number must be between -1,000,000,000 and 1,000,000,000"
-  }
-  ```
+- All valid numbers (including negative and floating-point) return 200 status code
 
 ## License
 This project is licensed under the MIT License.

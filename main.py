@@ -1,12 +1,11 @@
 from mangum import Mangum
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import math
 
 app = FastAPI(title="Number Classification API")
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,11 +15,12 @@ app.add_middleware(
 )
 
 def is_armstrong(num: int) -> bool:
-    str_num = str(num)
+    str_num = str(abs(num))
     power = len(str_num)
-    return num == sum(int(digit) ** power for digit in str_num)
+    return abs(num) == sum(int(digit) ** power for digit in str_num)
 
 def is_prime(num: int) -> bool:
+    num = abs(num)
     if num < 2:
         return False
     for i in range(2, int(math.sqrt(num)) + 1):
@@ -29,17 +29,18 @@ def is_prime(num: int) -> bool:
     return True
 
 def is_perfect(num: int) -> bool:
+    num = abs(num)
     if num <= 1:
         return False
     return sum(i for i in range(1, num) if num % i == 0) == num
 
 def get_digit_sum(num: int) -> int:
-    return sum(int(digit) for digit in str(num))
+    return sum(int(digit) for digit in str(abs(num)))
 
 async def get_fun_fact(num: int) -> str:
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"http://numbersapi.com/{num}/math")
+            response = await client.get(f"http://numbersapi.com/{abs(num)}/math")
             if response.status_code == 200:
                 return response.text
             return f"{num} is a number with interesting properties."
@@ -49,25 +50,18 @@ async def get_fun_fact(num: int) -> str:
 @app.get("/api/classify-number")
 async def classify_number(number: str):
     try:
-        num = int(number)
-    except ValueError:
-        return {
-            "number": number,
-            "error": True
-        }
-
-    if abs(num) > 1_000_000_000:
-        raise HTTPException(
-            status_code=400,
-            detail="Number must be between -1,000,000,000 and 1,000,000,000"
-        )
-
-    try:
+        # Try to convert to float first to handle decimal points
+        num_float = float(number)
+        # Convert to integer by truncating
+        num = int(num_float)
+        
+        # Generate properties
         properties = []
         if is_armstrong(num):
             properties.append("armstrong")
         properties.append("odd" if num % 2 else "even")
 
+        # Get fun fact
         fun_fact = await get_fun_fact(num)
 
         return {
@@ -78,11 +72,17 @@ async def classify_number(number: str):
             "digit_sum": get_digit_sum(num),
             "fun_fact": fun_fact
         }
+    except ValueError:
+        # Return invalid input with the original number string
+        return {
+            "number": number,
+            "error": True
+        }
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail="An unexpected error occurred while processing your request"
-        )
+        # Return the original input in case of other errors
+        return {
+            "number": number,
+            "error": True
+        }
 
-# Mangum handler
 handler = Mangum(app)
